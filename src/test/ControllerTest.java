@@ -100,8 +100,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void testControlNonExistingDeviceSucceeds() {
-        assertTrue("Control device should fail", myApp.doControl("ffff", 30));
+    public void testControlNonExistingDeviceFails() {
+        assertFalse("Control device should fail", myApp.doControl("ffff", 30));
     }
 
     @Test
