@@ -8,7 +8,9 @@ package main;
  * 
  * @author Diana Kirk
  * 
- * @version 1.1 : May 14th, 2015
+ * @version 1.1 : December 18th, 2023
+ * Өөрчөлт хийсэн: Э.Дэлгэрням
+ * Алдаа олж засвар хийсэн.
  *		
  *
  */
@@ -114,8 +116,8 @@ public class Controller {
 		if (deviceID == null) {
 			throw new NullPointerException();
 		}
-		
-		if (!findDeviceIDInList(deviceID)) { 
+		//not checking list is empty
+		if (!findDeviceIDInList(deviceID)  || controlledDevices == null) { 
 			inputsOk = false; 		
 		}
 	
@@ -150,7 +152,19 @@ public class Controller {
 
 	public boolean doControl(String deviceID, int inputVal) {
 		
-		return true;
+		boolean inputsOk = true;
+		
+		final String DIGITS_MASK = "[0-9]+";
+		
+		if (deviceID.equals("") || deviceID.length()!=4  ||  deviceID.matches(DIGITS_MASK)) {
+			throw new IllegalArgumentException();
+		}
+		
+		if (!findDeviceIDInList(deviceID) || deviceID == null) { 
+			inputsOk = false; 		
+		}
+		
+		return (inputsOk);
 	}
 
 	
@@ -163,6 +177,10 @@ public class Controller {
 	public int getNumDevices() {
 		return (nextIndex);
 	}	
+	
+	private boolean isInputValueInRange(ControlledDevice device, int inputVal) {
+	    return inputVal >= device.getOperatingMin() && inputVal <= device.getOperatingMax();
+	}
 
 	
 	
@@ -172,7 +190,8 @@ public class Controller {
 				int i=0;
 				boolean found = false;
 				while  (!found && (i<controlledDevices.length)) {
-					if (controlledDevices[i].getID()==id) {
+					// if (controlledDevices[i].getID() == id)  -> Error
+					if (controlledDevices[i] != null && controlledDevices[i].getID().equals(id)) {
 						found = true;
 					}
 					i++;
